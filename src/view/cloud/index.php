@@ -19,6 +19,8 @@
             align-items: center;
             cursor: pointer;
             transition: 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
         .upload-box:hover {
@@ -26,7 +28,13 @@
         }
 
         .upload-box input[type="file"] {
-            display: none;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
         }
 
         .upload-icon {
@@ -95,11 +103,26 @@
         .file-actions a:hover {
             text-decoration: underline;
         }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar bg-dark border-body" data-bs-theme="dark">
+        <button id="toggle-form-btn" title="Abrir/Fechar painel" style="
+            position: fixed;
+            right: 20px;
+            background-color: #212529;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        ">
+            ⚙️
+        </button>
+
         <div class="container">
             <a class="navbar-brand" href="#">
                 <img src="/cloudz-panel/assets/icons/thunderstorm_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt="Bootstrap" width="50" height="60">
@@ -108,10 +131,26 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <form action="<?= PATH_CONTROLLER . "CloudController.php"; ?>">
-            <div id="div-form" class="d-flex">
-                <div id="div-account" class="w-50">
+    <div class="container mt-2">
+        <div id="service-selection" class="mb-2">
+            <label class="form-label">Selecione o serviço:</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="service" id="service-aws" value="AWS-S3" checked>
+                <label class="form-check-label" for="service-aws">AWS S3</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="service" id="service-ftp" value="FTP">
+                <label class="form-check-label" for="service-ftp">FTP</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="service" id="service-gdrive" value="GOOGLE-DRIVE">
+                <label class="form-check-label" for="service-gdrive">Google Drive</label>
+            </div>
+        </div>
+
+        <form id="form-upload" action="<?= PATH_CONTROLLER . "CloudController.php"; ?>">
+            <div id="form-container" class="d-none">
+                <div id="div-account">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#aws-s3-tab-pane" type="button" role="tab" aria-controls="aws-s3-tab-pane" aria-selected="true">AWS S3</button>
@@ -124,7 +163,7 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active ms-2" id="aws-s3-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="tab-pane fade show active ms-2" id="aws-s3-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0" data-tab="AWS-S3">
                             <div class="mb-3">
                                 <label for="input-key" class="form-label">Key</label>
                                 <input type="text" class="form-control" id="input-key" name="aws-s3-key" placeholder="(Obrigatório)">
@@ -144,7 +183,7 @@
 
                             <input type="text" class="form-control d-none" id="input-type" name="service-type" value="s3">
                         </div>
-                        <div class="tab-pane fade ms-2" id="ftp-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <div class="tab-pane fade ms-2" id="ftp-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0" data-tab="FTP">
                             <div class="mb-3">
                                 <label for="input-host" class="form-label">Host</label>
                                 <input type="text" class="form-control" id="input-host" name="host" placeholder="(Obrigatório)">
@@ -168,7 +207,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade ms-2" id="google-drive-tab-panel" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+                        <div class="tab-pane fade ms-2" id="google-drive-tab-panel" role="tabpanel" aria-labelledby="contact-tab" tabindex="0" data-tab="GOOGLE-DRIVE">
                             <div class="mb-3">
                                 <label for="input-client-id" class="form-label">Id</label>
                                 <input type="text" class="form-control" id="input-client-id" name="client-id" placeholder="(Obrigatório)">
@@ -183,7 +222,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="input-folder-id" class="form-label">Id da Pasta</label>
-                                <input type="text" class="form-control" id="input-folder-id" name="folder-id" placeholder="(Obrigatório)">
+                                <input type="text" class="form-control" id="input-folder-id" name="folder-id" placeholder="(Opcional)">
                             </div>
 
                             <input type="text" class="form-control d-none" id="input-type" name="service-type" value="GOOGLE-DRIVE">
@@ -217,9 +256,10 @@
                             <label class="form-check-label me-2" for="input-delete-after-upload">Deletar arquivo local</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
-                <div id="attachments" class="w-50 mh-75 ms-5" style="border: 1px solid #ddd; border-radius: 12px; height: 34vw;">
+            </div>
+            <div class="attachments-container">
+                <div id="attachments" class="w-100" style="border: 1px solid #ddd; border-radius: 12px; height: 34vw;">
                     <label class="upload-box w-100">
                         <div class="upload-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -227,31 +267,17 @@
                             </svg>
                         </div>
                         <span class="upload-text">Upload File</span>
-                        <input type="file" name="attachments" id="input-attachments" multiple>
+                        <input type="file" name="attachments[]" id="input-attachments" multiple>
                     </label>
-                    <div id="attachments-view" class="mt-3">
-                        <div class="file-card w-100">
-                            <img src="/cloudz-panel/assets/icons/thunderstorm_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" style="width: 10%;">
-                            <div class="file-info">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <p class="file-name mb-0">Reunião Anual de Vendas</p>
-                                    </div>
-                                </div>
-                                <div class="file-actions">
-                                    <a href="#">Baixar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="attachments-view" class="mt-3"></div>
                 </div>
             </div>
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script> -->
     <script src="/cloudz-panel/assets/js/app.js"></script>
 </body>
 

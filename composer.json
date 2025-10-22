@@ -1,0 +1,19 @@
+{
+    "name": "cloudz/cloudz-panel",
+    "description": "Sistema demonstrativo da biblioteca CloudZ",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cloudz\\CloudzPanel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Caio Flor",
+            "email": "caio.flor@outlook.com"
+        }
+    ],
+    "require": {
+        "caiovieiraflor/cloudz": "^2.0"
+    }
+}
