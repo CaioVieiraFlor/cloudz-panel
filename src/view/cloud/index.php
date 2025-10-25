@@ -189,6 +189,10 @@
                                 <input type="text" class="form-control" id="input-host" name="host" placeholder="(Obrigatório)">
                             </div>
                             <div class="mb-3">
+                                <label for="input-user" class="form-label">Usuário</label>
+                                <input type="text" class="form-control" id="input-user" name="user" placeholder="(Obrigatório)">
+                            </div>
+                            <div class="mb-3">
                                 <label for="input-password" class="form-label">Senha</label>
                                 <input type="text" class="form-control" id="input-password" name="password" placeholder="(Obrigatório)">
                             </div>
@@ -221,8 +225,8 @@
                                 <input type="text" class="form-control" id="input-refresh-token" name="refresh-token" placeholder="(Obrigatório)">
                             </div>
                             <div class="mb-3">
-                                <label for="input-folder-id" class="form-label">Id da Pasta</label>
-                                <input type="text" class="form-control" id="input-folder-id" name="folder-id" placeholder="(Opcional)">
+                                <label for="input-folder-name" class="form-label">Nome da Pasta</label>
+                                <input type="text" class="form-control" id="input-folder-name" name="folder-name" placeholder="(Opcional)">
                             </div>
 
                             <input type="text" class="form-control d-none" id="input-type" name="service-type" value="GOOGLE-DRIVE">

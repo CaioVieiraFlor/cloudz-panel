@@ -24,20 +24,20 @@ class CloudController extends Controller
             } elseif ($_POST['service'] == 'FTP') {
                 $account = [
                     'serviceType' => $_POST['service'],
-                    'host' => '',
-                    'user' => '',
-                    'password' => '',
-                    'port' => ,
-                    'isPassive' => ,
-                    'useSSH' => 
+                    'host' => $_POST['host'],
+                    'user' => $_POST['user'],
+                    'password' => $_POST['password'],
+                    'port' => $_POST['port'],
+                    'isPassive' => ($_POST['passive']),
+                    'useSSH' => $_POST['use-ssh']
                 ];
             } elseif ($_POST['service'] == 'GOOGLE-DRIVE') {
                 $account = [
                     'serviceType' => $_POST['service'],
-                    'clientId' => '',
-                    'clientSecret' => '',
-                    'refreshToken' => '',
-                    'folderId' => null,
+                    'clientId' => $_POST['client-id'],
+                    'clientSecret' => $_POST['client-secret'],
+                    'refreshToken' => $_POST['refresh-token'],
+                    'folderName' => $_POST['folder-name'],
                     'type' => 'GOOGLE-DRIVE'
                 ];
             }
@@ -52,9 +52,9 @@ class CloudController extends Controller
                     exit;
                 }
 
-                $pastaId = $googleDriveHelper->findFolderByName('MeusProjetos');
+                $pastaId = $googleDriveHelper->findFolderByName($account['folderName']);
                 if (!$pastaId) {
-                    $pastaId = $googleDriveHelper->createFolder('MeusProjetos');
+                    $pastaId = $googleDriveHelper->createFolder($account['folderName']);
                 }
 
                 $cloudServiceAccount->folderId = $pastaId;

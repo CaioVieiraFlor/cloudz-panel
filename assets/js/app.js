@@ -55,9 +55,17 @@ toggleBtn.addEventListener('click', () => {
 
 const form = document.querySelector('form')
 
-saveFormToLocalStorage = () => {
+const saveFormToLocalStorage = () => {    
     const tabs = document.querySelectorAll('.tab-pane')
+
+    const inputServiceType = document.querySelector('input[name="service"]');
+    const serviceRadio = document.querySelector('input[name="service"]:checked')
+    const service = serviceRadio.value
+
     const data = {}
+    data.general = {}
+
+    data.general[inputServiceType.name] = service
 
     tabs.forEach(tab => {
         const tabName = tab.getAttribute('data-tab')
@@ -74,8 +82,6 @@ saveFormToLocalStorage = () => {
     })
 
     const generalFields = document.querySelectorAll('#div-path input, #div-utility-path input, #checkbox-utility-path, #input-encrypt-name, #input-delete-after-upload')
-    data.general = {}
-
     generalFields.forEach(input => {
         if (input.type === 'checkbox') {
             data.general[input.name] = input.checked
@@ -87,7 +93,7 @@ saveFormToLocalStorage = () => {
     localStorage.setItem('formData', JSON.stringify(data))
 }
 
-loadFormFromLocalStorage = () => {
+const loadFormFromLocalStorage = () => {
     const storedData = localStorage.getItem('formData')
     if (!storedData) return
 
@@ -115,17 +121,31 @@ loadFormFromLocalStorage = () => {
             const input = document.querySelector(`[name="${inputName}"]`)
             if (!input) continue
 
+            const value = data.general[inputName]
+
             if (input.type === 'checkbox') {
-                input.checked = data.general[inputName]
+                input.checked = !!value
+            } else if (input.type === 'radio') {
+                const radioToSelect = document.querySelector(`[name="${inputName}"][value="${value}"]`)
+                if (radioToSelect) {
+                    radioToSelect.checked = true
+                }
             } else {
-                input.value = data.general[inputName]
+                input.value = value
             }
         }
+
     }
 }
 
 loadFormFromLocalStorage()
 form.addEventListener('input', saveFormToLocalStorage)
+
+document.addEventListener('input', (event) => {
+    if (event.target.matches('input[type="radio"]')) {
+        saveFormToLocalStorage()
+    }
+})
 
 const paintAttachmentsFromLocalStorage = (files) => {
     const attachmentsView = document.getElementById('attachments-view')
@@ -160,7 +180,7 @@ if (attachmentsSaved) {
 
 const requiredFields = {
     'AWS-S3': ['aws-s3-key', 'aws-s3-secret-key', 'aws-s3-region', 'aws-s3-bucket-name'],
-    'FTP': ['host', 'password', 'port'],
+    'FTP': ['host', 'user', 'password', 'port'],
     'GOOGLE-DRIVE': ['client-id', 'client-secret', 'refresh-token']
 }
 
@@ -254,35 +274,37 @@ inputAttachments.addEventListener('change', (event) => {
 const btnsDelete = document.querySelectorAll('.delete')
 document.addEventListener('click', (event) => {
     if (event.target.classList.contains('delete')) {
-        const fileUrl = event.target.dataset.url
+        const confirmDeletion = confirm('Deseja mesmo excluir esse arquivo?');
+        if (confirmDeletion) {
+            const fileUrl = event.target.dataset.url
 
-        const storedData = localStorage.getItem('formData')
-        if (!storedData) {
-            alert('Nenhuma configuração encontrada no Local Storage. Preencha os dados do serviço antes.')
-            inputAttachments.value = ''
-            return
+            const storedData = localStorage.getItem('formData')
+            if (!storedData) {
+                alert('Nenhuma configuração encontrada no Local Storage. Preencha os dados do serviço antes.')
+                inputAttachments.value = ''
+                return
+            }
+
+            const service = event.target.dataset.service
+            const data = JSON.parse(storedData)[service] || {}
+
+            const formData = new FormData()
+            formData.append('service', service)
+
+            for (const key of Object.keys(data)) {
+                formData.append(key, data[key])
+            }
+
+            deleteAttachment(fileUrl, formData)
+                .then(() => {
+                    const filesSaved = JSON.parse(localStorage.getItem('attachments')).files
+                    const files = filesSaved.filter(file => file.url == fileUrl)
+
+                    localStorage.setItem('attachments', JSON.stringify(files))
+
+                    const divAttachment = document.querySelector(`.file-card[data-url="${fileUrl}"`)
+                    divAttachment.classList.add('d-none')
+                })
         }
-        
-        const service = event.target.dataset.service
-        const data = JSON.parse(storedData)[service] || {}
-        console.log(JSON.parse(storedData), service);
-
-        const formData = new FormData()
-        formData.append('service', service)
-
-        for (const key of Object.keys(data)) {
-            formData.append(key, data[key])
-        }
-
-        deleteAttachment(fileUrl, formData)
-            .then(() => {
-                const filesSaved = JSON.parse(localStorage.getItem('attachments')).files
-                const files = filesSaved.filter(file => file.url == fileUrl)
-
-                localStorage.setItem('attachments', JSON.stringify(files))
-
-                const divAttachment = document.querySelector(`.file-card[data-url="${fileUrl}"`)
-                divAttachment.classList.add('d-none')
-            })
     }
 })
