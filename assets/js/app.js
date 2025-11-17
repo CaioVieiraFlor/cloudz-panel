@@ -55,7 +55,7 @@ toggleBtn.addEventListener('click', () => {
 
 const form = document.querySelector('form')
 
-const saveFormToLocalStorage = () => {    
+const saveFormToLocalStorage = () => {
     const tabs = document.querySelectorAll('.tab-pane')
 
     const inputServiceType = document.querySelector('input[name="service"]');
@@ -154,7 +154,7 @@ const paintAttachmentsFromLocalStorage = (files) => {
     files.forEach(file => {
         attachmentsView.innerHTML += `
             <div class="file-card w-100" data-url="${file.url}">
-                <img src="/cloudz-panel/assets/icons/docs_24dp_2B579A_FILL0_wght400_GRAD0_opsz24.svg" alt="Bootstrap" style="width: 5%;">
+                <img src="/assets/icons/docs_24dp_2B579A_FILL0_wght400_GRAD0_opsz24.svg" alt="Bootstrap" style="width: 5%;">
                 <div class="w-100">
                     <div class="file-info d-flex align-items-center justify-content-between w-100">
                         <div class="d-flex align-items-center justify-content-between">
@@ -167,7 +167,7 @@ const paintAttachmentsFromLocalStorage = (files) => {
                         <a href="${file.url}">Baixar</a>
                     </div>
                 </div>
-                <img class="delete cursor-pointer" src="/cloudz-panel/assets/icons/delete_24dp_C80909_FILL0_wght400_GRAD0_opsz24.svg" alt="Bootstrap" style="width: 3%;" data-url="${file.url}" data-service="${serviceRadio}">
+                <img class="delete cursor-pointer" src="/assets/icons/delete_24dp_C80909_FILL0_wght400_GRAD0_opsz24.svg" alt="Bootstrap" style="width: 3%;" data-url="${file.url}" data-service="${serviceRadio}">
             </div>
         `
     })
