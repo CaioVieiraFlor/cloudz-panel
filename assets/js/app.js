@@ -1,3 +1,6 @@
+const modal = new bootstrap.Modal(document.getElementById('modal'))
+modal.show()
+
 const checkboxUtilityPath = document.getElementById('checkbox-utility-path')
 checkboxUtilityPath.addEventListener('change', (event) => {
     const divUtilityPath = document.getElementById('div-utility-path')

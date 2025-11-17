@@ -279,6 +279,54 @@
         </form>
     </div>
 
+    <div id="modal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4 class="mb-3">Bem-vindo ao Painel da CloudZ!</h4>
+                <p>
+                    Aqui você pode enviar, baixar e gerenciar seus arquivos de forma rápida e simples.
+                    Veja como usar:
+                </p>
+
+                <h5 class="mt-4">1. Configure seus serviços</h5>
+                <p>
+                    Clique no ícone de <strong>engrenagem</strong> no topo da página para configurar o serviço de nuvem que deseja utilizar. 
+                    As informações preenchidas são <strong>salvas automaticamente no seu navegador</strong>, então você não precisa configurar novamente depois.
+                </p>
+
+                <h5 class="mt-4">2. Volte para a área de uploads</h5>
+                <p>
+                    Após configurar tudo, clique novamente na engrenagem para retornar à página principal.
+                </p>
+
+                <h5 class="mt-4">3. Escolha o serviço</h5>
+                <p>
+                    Selecione qual serviço deseja usar (aquele que você já configurou no passo anterior).
+                </p>
+
+                <h5 class="mt-4">4. Envie seus arquivos</h5>
+                <p>
+                    Clique no ícone de <strong>upload</strong> para abrir o explorador de arquivos do seu computador.
+                    Escolha os arquivos desejados e o envio começará automaticamente.
+                </p>
+
+                <h5 class="mt-4">5. Gerencie seus arquivos</h5>
+                <p>
+                    Assim que o upload for concluído, o arquivo aparecerá logo abaixo.
+                    Você poderá <strong>baixar</strong> ou <strong>excluir</strong> clicando nos ícones correspondentes.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="/assets/js/app.js"></script>
 </body>
